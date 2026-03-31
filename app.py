@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+from datetime import datetime
 
 app = Flask(__name__)
 
-# DB setup
 conn = sqlite3.connect('data.db', check_same_thread=False)
 cursor = conn.cursor()
 
@@ -11,7 +11,8 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     amount INTEGER,
-    type TEXT
+    type TEXT,
+    date TEXT
 )
 ''')
 conn.commit()
@@ -23,14 +24,16 @@ def index():
         amount = request.form.get('amount')
         t_type = request.form.get('type')
 
+        date = datetime.now().strftime("%d-%m-%Y %H:%M")
+
         if amount and t_type:
-            cursor.execute("INSERT INTO transactions (amount, type) VALUES (?, ?)", (amount, t_type))
+            cursor.execute("INSERT INTO transactions (amount, type, date) VALUES (?, ?, ?)",
+                           (amount, t_type, date))
             conn.commit()
 
-        return redirect('/')   # IMPORTANT (refresh fix)
+        return redirect('/')
 
-    # Fetch data
-    cursor.execute("SELECT * FROM transactions")
+    cursor.execute("SELECT * FROM transactions ORDER BY id DESC")
     data = cursor.fetchall()
 
     transactions = []
@@ -38,10 +41,15 @@ def index():
     total_expense = 0
 
     for row in data:
-        t = {"id": row[0], "amount": int(row[1]), "type": row[2]}
+        t = {
+            "id": row[0],
+            "amount": int(row[1]),
+            "type": row[2].capitalize(),
+            "date": row[3]
+        }
         transactions.append(t)
 
-        if t["type"] == "income":
+        if t["type"] == "Income":
             total_income += t["amount"]
         else:
             total_expense += t["amount"]
@@ -55,7 +63,6 @@ def index():
                            expense=total_expense)
 
 
-# DELETE FEATURE (extra marks 🔥)
 @app.route('/delete/<int:id>')
 def delete(id):
     cursor.execute("DELETE FROM transactions WHERE id=?", (id,))
