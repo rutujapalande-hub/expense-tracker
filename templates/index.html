@@ -6,9 +6,9 @@
 
 <body style="font-family: Arial; background:#eef2f7; text-align:center;">
 
-<h1 style="color:#333;">💰 Expense Tracker</h1>
+<h1>💰 Expense Tracker</h1>
 
-<!-- SUMMARY CARDS -->
+<!-- DASHBOARD -->
 <div style="display:flex; justify-content:center; gap:20px;">
 
 <div style="background:white; padding:15px; width:150px; border-radius:10px;">
@@ -31,9 +31,9 @@
 <br>
 
 <!-- FORM -->
-<div style="background:white; padding:20px; width:300px; margin:auto; border-radius:10px;">
+<div style="background:white; padding:20px; width:320px; margin:auto; border-radius:10px;">
     <form method="POST">
-        <input type="number" name="amount" placeholder="Enter amount" required><br><br>
+        <input type="number" name="amount" placeholder="Enter Amount" required><br><br>
 
         <select name="type">
             <option value="income">Income</option>
@@ -41,23 +41,33 @@
         </select><br><br>
 
         <button type="submit" style="background:blue; color:white; padding:10px; border:none; border-radius:5px;">
-            Add
+            Add Transaction
         </button>
     </form>
 </div>
 
 <br>
 
-<!-- TRANSACTIONS -->
-<div style="background:white; padding:20px; width:350px; margin:auto; border-radius:10px;">
-    <h3>Transactions</h3>
+<!-- HISTORY -->
+<div style="background:white; padding:20px; width:420px; margin:auto; border-radius:10px;">
+    <h3>Transaction History</h3>
 
     {% for t in transactions %}
-        <div style="display:flex; justify-content:space-between; margin:5px;">
-            <span style="color:{% if t.type=='income' %}green{% else %}red{% endif %};">
-                {{ t.type }} ₹{{ t.amount }}
-            </span>
-            <a href="/delete/{{ t.id }}" style="color:red;">Delete</a>
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ccc; padding:8px;">
+            
+            <div>
+                <b>{{ t.type }}</b><br>
+                <small>{{ t.date }}</small>
+            </div>
+
+            <div>
+                <span style="color:{% if t.type=='Income' %}green{% else %}red{% endif %};">
+                    ₹{{ t.amount }}
+                </span>
+                <br>
+                <a href="/delete/{{ t.id }}" style="color:red; font-size:12px;">Delete</a>
+            </div>
+
         </div>
     {% endfor %}
 
