@@ -3,24 +3,39 @@
 <head>
     <title>Expense Tracker</title>
 </head>
-<body>
-    <h2>Total Balance: ₹{{ total }}</h2>
 
-    <form method="post">
-        Amount: <input type="number" name="amount" required>
-        Type:
+<body style="font-family: Arial; background:#f4f6f8; text-align:center;">
+
+<h1 style="color:#333;">💰 Expense Tracker</h1>
+
+<div style="background:white; padding:20px; margin:20px auto; width:300px; border-radius:10px; box-shadow:0 0 10px gray;">
+    
+    <h2 style="color:green;">Balance: ₹{{ balance }}</h2>
+
+    <form method="POST">
+        <input type="number" name="amount" placeholder="Enter amount" required><br><br>
+        
         <select name="type">
             <option value="income">Income</option>
             <option value="expense">Expense</option>
-        </select>
-        <button type="submit">Add</button>
-    </form>
+        </select><br><br>
 
-    <h3>Transactions:</h3>
-    <ul>
-        {% for amt, t in data %}
-            <li>{{ t }}: ₹{{ amt }}</li>
-        {% endfor %}
-    </ul>
+        <button style="background:blue; color:white; padding:10px; border:none; border-radius:5px;">
+            Add Transaction
+        </button>
+    </form>
+</div>
+
+<div style="background:white; padding:20px; width:300px; margin:auto; border-radius:10px; box-shadow:0 0 10px gray;">
+    <h3>Transactions</h3>
+
+    {% for t in transactions %}
+        <p style="color:{% if t.type=='income' %}green{% else %}red{% endif %};">
+            {{ t.type }} : ₹{{ t.amount }}
+        </p>
+    {% endfor %}
+
+</div>
+
 </body>
 </html>
