@@ -1,24 +1,49 @@
 from flask import Flask, render_template, request
+import sqlite3
 
 app = Flask(__name__)
 
-transactions = []
+# Database connection
+conn = sqlite3.connect('data.db', check_same_thread=False)
+cursor = conn.cursor()
+
+# Create table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    amount INTEGER,
+    type TEXT
+)
+''')
+conn.commit()
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    total = 0
     if request.method == 'POST':
         amount = int(request.form['amount'])
         t_type = request.form['type']
-        transactions.append((amount, t_type))
 
-    for amt, t in transactions:
-        if t == 'income':
-            total += amt
-        else:
-            total -= amt
+        # Insert into DB
+        cursor.execute("INSERT INTO transactions (amount, type) VALUES (?, ?)", (amount, t_type))
+        conn.commit()
 
-    return render_template('index.html', total=total, data=transactions)
+    # Fetch all data
+    cursor.execute("SELECT amount, type FROM transactions")
+    data = cursor.fetchall()
+
+    transactions = [{"amount": row[0], "type": row[1]} for row in data]
+
+    # Calculate totals
+    total_income = sum(t["amount"] for t in transactions if t["type"] == "income")
+    total_expense = sum(t["amount"] for t in transactions if t["type"] == "expense")
+
+    balance = total_income - total_expense
+
+    return render_template('index.html',
+                           transactions=transactions,
+                           balance=balance)
+
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True)
