@@ -4,35 +4,61 @@
     <title>Expense Tracker</title>
 </head>
 
-<body style="font-family: Arial; background:#f4f6f8; text-align:center;">
+<body style="font-family: Arial; background:#eef2f7; text-align:center;">
 
 <h1 style="color:#333;">💰 Expense Tracker</h1>
 
-<div style="background:white; padding:20px; margin:20px auto; width:300px; border-radius:10px; box-shadow:0 0 10px gray;">
-    
-    <h2 style="color:green;">Balance: ₹{{ balance }}</h2>
+<!-- SUMMARY CARDS -->
+<div style="display:flex; justify-content:center; gap:20px;">
 
+<div style="background:white; padding:15px; width:150px; border-radius:10px;">
+    <h3>Balance</h3>
+    <h2 style="color:blue;">₹{{ balance }}</h2>
+</div>
+
+<div style="background:white; padding:15px; width:150px; border-radius:10px;">
+    <h3>Income</h3>
+    <h2 style="color:green;">₹{{ income }}</h2>
+</div>
+
+<div style="background:white; padding:15px; width:150px; border-radius:10px;">
+    <h3>Expense</h3>
+    <h2 style="color:red;">₹{{ expense }}</h2>
+</div>
+
+</div>
+
+<br>
+
+<!-- FORM -->
+<div style="background:white; padding:20px; width:300px; margin:auto; border-radius:10px;">
     <form method="POST">
         <input type="number" name="amount" placeholder="Enter amount" required><br><br>
-        
+
         <select name="type">
             <option value="income">Income</option>
             <option value="expense">Expense</option>
         </select><br><br>
 
-        <button style="background:blue; color:white; padding:10px; border:none; border-radius:5px;">
-            Add Transaction
+        <button type="submit" style="background:blue; color:white; padding:10px; border:none; border-radius:5px;">
+            Add
         </button>
     </form>
 </div>
 
-<div style="background:white; padding:20px; width:300px; margin:auto; border-radius:10px; box-shadow:0 0 10px gray;">
+<br>
+
+<!-- TRANSACTIONS -->
+<div style="background:white; padding:20px; width:350px; margin:auto; border-radius:10px;">
     <h3>Transactions</h3>
 
     {% for t in transactions %}
-        <p style="color:{% if t.type=='income' %}green{% else %}red{% endif %};">
-            {{ t.type }} : ₹{{ t.amount }}
-        </p>
+        <div style="display:flex; justify-content:space-between; margin:5px;">
+            <span style="color:{% if t.type=='income' %}green{% else %}red{% endif %};">
+                {{ t.type }} ₹{{ t.amount }}
+            </span>
+            <a href="/delete/{{ t.id }}" style="color:red;">Delete</a>
+        </div>
     {% endfor %}
 
 </div>
