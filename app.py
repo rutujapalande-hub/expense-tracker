@@ -1,12 +1,11 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
-from datetime import datetime
-import pytz
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
 # Database connection
-conn = sqlite3.connect('data2.db', check_same_thread=False)
+conn = sqlite3.connect('data.db', check_same_thread=False)
 cursor = conn.cursor()
 
 # Create table
@@ -29,15 +28,10 @@ def index():
         t_type = request.form.get('type')
         category = request.form.get('category')
 
-        # IST TIME
-       from datetime import datetime, timedelta
-
-# Convert UTC → IST manually
-utc_time = datetime.utcnow()
-ist_time = utc_time + timedelta(hours=5, minutes=30)
-
-date = ist_time.strftime("%d-%m-%Y %I:%M %p")
-
+        # ✅ IST TIME FIX (NO ERROR METHOD)
+        utc_time = datetime.utcnow()
+        ist_time = utc_time + timedelta(hours=5, minutes=30)
+        date = ist_time.strftime("%d-%m-%Y %I:%M %p")
 
         if amount and t_type and category:
             cursor.execute(
