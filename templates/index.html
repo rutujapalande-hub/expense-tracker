@@ -4,25 +4,25 @@
     <title>Expense Tracker</title>
 </head>
 
-<body style="font-family: Arial; background:#eef2f7; text-align:center;">
+<body style="font-family: Arial; background:#eef2f7;">
 
-<h1>💰 Expense Tracker</h1>
+<h1 style="text-align:center;">💰 Expense Tracker</h1>
 
 <!-- DASHBOARD -->
 <div style="display:flex; justify-content:center; gap:20px;">
 
-<div style="background:white; padding:15px; width:150px; border-radius:10px;">
-    <h3>Balance</h3>
+<div style="background:white; padding:15px; width:150px; border-radius:10px; text-align:center;">
+    <h4>Balance</h4>
     <h2 style="color:blue;">₹{{ balance }}</h2>
 </div>
 
-<div style="background:white; padding:15px; width:150px; border-radius:10px;">
-    <h3>Income</h3>
+<div style="background:white; padding:15px; width:150px; border-radius:10px; text-align:center;">
+    <h4>Income</h4>
     <h2 style="color:green;">₹{{ income }}</h2>
 </div>
 
-<div style="background:white; padding:15px; width:150px; border-radius:10px;">
-    <h3>Expense</h3>
+<div style="background:white; padding:15px; width:150px; border-radius:10px; text-align:center;">
+    <h4>Expense</h4>
     <h2 style="color:red;">₹{{ expense }}</h2>
 </div>
 
@@ -40,6 +40,8 @@
             <option value="expense">Expense</option>
         </select><br><br>
 
+        <input type="text" name="category" placeholder="Category (Food, Travel)" required><br><br>
+
         <button type="submit" style="background:blue; color:white; padding:10px; border:none; border-radius:5px;">
             Add Transaction
         </button>
@@ -49,22 +51,21 @@
 <br>
 
 <!-- HISTORY -->
-<div style="background:white; padding:20px; width:420px; margin:auto; border-radius:10px;">
-    <h3>Transaction History</h3>
+<div style="background:white; padding:20px; width:500px; margin:auto; border-radius:10px;">
+    <h3 style="text-align:center;">Transaction History</h3>
 
     {% for t in transactions %}
-        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ccc; padding:8px;">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ccc; padding:10px;">
             
             <div>
-                <b>{{ t.type }}</b><br>
+                <b>{{ t.type }}</b> - {{ t.category }}<br>
                 <small>{{ t.date }}</small>
             </div>
 
-            <div>
+            <div style="text-align:right;">
                 <span style="color:{% if t.type=='Income' %}green{% else %}red{% endif %};">
                     ₹{{ t.amount }}
-                </span>
-                <br>
+                </span><br>
                 <a href="/delete/{{ t.id }}" style="color:red; font-size:12px;">Delete</a>
             </div>
 
