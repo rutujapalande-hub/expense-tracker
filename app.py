@@ -30,8 +30,14 @@ def index():
         category = request.form.get('category')
 
         # IST TIME
-        ist = pytz.timezone('Asia/Kolkata')
-        date = datetime.now(ist).strftime("%d-%m-%Y %I:%M %p")
+       from datetime import datetime, timedelta
+
+# Convert UTC → IST manually
+utc_time = datetime.utcnow()
+ist_time = utc_time + timedelta(hours=5, minutes=30)
+
+date = ist_time.strftime("%d-%m-%Y %I:%M %p")
+
 
         if amount and t_type and category:
             cursor.execute(
