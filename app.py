@@ -4,14 +4,17 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+# DB connection
 conn = sqlite3.connect('data.db', check_same_thread=False)
 cursor = conn.cursor()
 
+# Create table (with date + category)
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     amount INTEGER,
     type TEXT,
+    category TEXT,
     date TEXT
 )
 ''')
@@ -23,12 +26,15 @@ def index():
     if request.method == 'POST':
         amount = request.form.get('amount')
         t_type = request.form.get('type')
+        category = request.form.get('category')
 
         date = datetime.now().strftime("%d-%m-%Y %H:%M")
 
-        if amount and t_type:
-            cursor.execute("INSERT INTO transactions (amount, type, date) VALUES (?, ?, ?)",
-                           (amount, t_type, date))
+        if amount and t_type and category:
+            cursor.execute(
+                "INSERT INTO transactions (amount, type, category, date) VALUES (?, ?, ?, ?)",
+                (amount, t_type, category, date)
+            )
             conn.commit()
 
         return redirect('/')
@@ -45,7 +51,8 @@ def index():
             "id": row[0],
             "amount": int(row[1]),
             "type": row[2].capitalize(),
-            "date": row[3]
+            "category": row[3],
+            "date": row[4]
         }
         transactions.append(t)
 
