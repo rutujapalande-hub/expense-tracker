@@ -1,14 +1,15 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 
-# DB connection
-conn = sqlite3.connect('data.db', check_same_thread=False)
+# Database connection
+conn = sqlite3.connect('data2.db', check_same_thread=False)
 cursor = conn.cursor()
 
-# Create table (with date + category)
+# Create table
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +29,9 @@ def index():
         t_type = request.form.get('type')
         category = request.form.get('category')
 
-        date = datetime.now().strftime("%d-%m-%Y %H:%M")
+        # IST TIME
+        ist = pytz.timezone('Asia/Kolkata')
+        date = datetime.now(ist).strftime("%d-%m-%Y %I:%M %p")
 
         if amount and t_type and category:
             cursor.execute(
@@ -39,6 +42,7 @@ def index():
 
         return redirect('/')
 
+    # Fetch data
     cursor.execute("SELECT * FROM transactions ORDER BY id DESC")
     data = cursor.fetchall()
 
